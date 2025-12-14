@@ -1,1 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>VOZ | Sistema de Gestión</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- FontAwesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+:root {
+    --primario: #2563eb;
+    --acento: #22c55e;
+    --fondo: #f8fafc;
+    --blanco: #ffffff;
+    --texto: #0f172a;
+    --gris: #e5e7eb;
+    --sombra: 0 10px 25px rgba(0,0,0,.1);
+    --radio: 14px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background: var(--fondo);
+    color: var(--texto);
+    display: flex;
+}
+
+/* =======================
+   SIDEBAR
+======================= */
+.sidebar {
+    width: 240px;
+    background: var(--blanco);
+    height: 100vh;
+    padding: 25px 20px;
+    box-shadow: var(--sombra);
+    position: fixed;
+}
+
+.logo {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--primario);
+    margin-bottom: 30px;
+}
+
+.menu a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    margin-bottom: 8px;
+    text-decoration: none;
+    color: var(--texto);
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.menu a:hover,
+.menu a.active {
+    background: linear-gradient(90deg, var(--primario), var(--acento));
+    color: white;
+}
+
+/* =======================
+   CONTENIDO
+======================= */
+.contenido {
+    margin-left: 240px;
+    width: 100%;
+}
+
+/* =======================
+   HEADER
+======================= */
+header {
+    background: linear-gradient(90deg, var(--primario), var(--acento));
+    color: white;
+    padding: 20px 35px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* =======================
+   TABLERO
+======================= */
+.tablero {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 25px;
+    padding: 30px;
+}
+
+/* =======================
+   COLUMNAS
+======================= */
+.columna {
+    background: var(--blanco);
+    border-radius: var(--radio);
+    padding: 18px;
+    box-shadow: var(--sombra);
+}
+
+.columna h3 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--primario);
+}
+
+/* BOTÓN */
+.btn {
+    background: var(--acento);
+    border: none;
+    color: white;
+    padding: 6px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* =======================
+   TARJETAS
+======================= */
+.contenedor-cards {
+    min-height: 200px;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.contenedor-cards.drag-over {
+    background: #eff6ff;
+    border: 2px dashed var(--primario);
+}
+
+.card {
+    background: #f1f5f9;
+    padding: 14px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    cursor: grab;
+    transition: 0.3s;
+}
+
+.card:hover {
+    background: linear-gradient(135deg, var(--primario), var(--acento));
+    color: white;
+    transform: scale(1.04);
+}
+
+/* =======================
+   MODAL
+======================= */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.4);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    width: 320px;
+}
+
+/* =======================
+   SECCIONES OCULTAS
+======================= */
+.seccion {
+    display: none;
+    padding: 30px;
+}
+
+.seccion.active {
+    display: block;
+}
+</style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+    <div class="logo">VOZ</div>
+    <nav class="menu">
+        <a href="#" class="active" onclick="mostrar('inicio')"><i class="fas fa-home"></i> Inicio</a>
+        <a href="#" onclick="mostrar('tareas')"><i class="fas fa-tasks"></i> Mis tareas</a>
+        <a href="#" onclick="mostrar('calendario')"><i class="fas fa-calendar"></i> Calendario</a>
+        <a href="#" onclick="mostrar('estadisticas')"><i class="fas fa-chart-line"></i> Estadísticas</a>
+        <a href="#" onclick="mostrar('configuracion')"><i class="fas fa-cog"></i> Configuración</a>
+    </nav>
+</aside>
+
+<!-- CONTENIDO -->
+<div class="contenido">
+
+<header>
+    <h2>Dashboard</h2>
+    <i class="fas fa-user-circle"></i>
+</header>
+
+<!-- INICIO -->
+<section id="inicio" class="seccion active">
+    <h3>Bienvenido al sistema VOZ</h3>
+    <p>Panel central de organización y planificación.</p>
+</section>
+
+<!-- TAREAS -->
+<section id="tareas" class="seccion active">
+    <main class="tablero">
+
+        <div class="columna">
+            <h3>📌 Por hacer <button class="btn" onclick="abrirModal()">+</button></h3>
+            <div class="contenedor-cards" id="porHacer" ondragover="allowDrop(event)" ondrop="drop(event)">
+                <div class="card" draggable="true" ondragstart="drag(event)">Preparar discurso</div>
+            </div>
+        </div>
+
+        <div class="columna">
+            <h3>⚙ En progreso</h3>
+            <div class="contenedor-cards" ondragover="allowDrop(event)" ondrop="drop(event)">
+                <div class="card" draggable="true" ondragstart="drag(event)">Campaña digital</div>
+            </div>
+        </div>
+
+        <div class="columna">
+            <h3>✅ Completado</h3>
+            <div class="contenedor-cards" ondragover="allowDrop(event)" ondrop="drop(event)">
+                <div class="card" draggable="true" ondragstart="drag(event)">Registro militantes</div>
+            </div>
+        </div>
+
+    </main>
+</section>
+
+<!-- CALENDARIO -->
+<section id="calendario" class="seccion">
+    <h3>📅 Calendario</h3>
+    <p>Próximamente integrado.</p>
+</section>
+
+<!-- ESTADISTICAS -->
+<section id="estadisticas" class="seccion">
+    <h3>📊 Estadísticas</h3>
+    <p>Gráficos y reportes futuros.</p>
+</section>
+
+<!-- CONFIGURACION -->
+<section id="configuracion" class="seccion">
+    <h3>⚙ Configuración</h3>
+    <p>Preferencias del sistema.</p>
+</section>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+    <div class="modal-content">
+        <h4>Nueva tarea</h4>
+        <input type="text" id="nuevaTarea" placeholder="Descripción">
+        <button class="btn" onclick="agregarTarea()">Agregar</button>
+    </div>
+</div>
+
+<script>
+let tarjeta = null;
+
+function drag(e){ tarjeta = e.target; }
+function allowDrop(e){ e.preventDefault(); }
+function drop(e){ e.preventDefault(); e.target.appendChild(tarjeta); }
+
+function abrirModal(){
+    modal.style.display = "flex";
+}
+
+function agregarTarea(){
+    const texto = nuevaTarea.value;
+    if(!texto) return;
+    const div = document.createElement("div");
+    div.className = "card";
+    div.draggable = true;
+    div.ondragstart = drag;
+    div.textContent = texto;
+    porHacer.appendChild(div);
+    nuevaTarea.value = "";
+    modal.style.display = "none";
+}
+
+function mostrar(id){
+    document.querySelectorAll(".seccion").forEach(s => s.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+}
+</script>
+
+</body>
+</html>
 
